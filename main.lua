@@ -1,12 +1,12 @@
 --------------------------------------------------------------------------------
--- 1. CONFIGURATION KEYAUTH
+-- 1. PENGATURAN KEYAUTH (ISI SESUAI DASHBOARD KEYAUTH)
 --------------------------------------------------------------------------------
 local KEYAUTH_NAME     = "Kianogantengtau's Application"
 local KEYAUTH_OWNERID  = "hgKhTnARRi"
 local KEYAUTH_SECRET   = "7e3f9c695a992b490d8112b973a1c44f3f32e62093ac79834c7c922af8c6dbc4"
 
 --------------------------------------------------------------------------------
--- 2. SERVICES & INITIALIZATION
+-- 2. SETUP SERVICES & INITIALIZATION
 --------------------------------------------------------------------------------
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -17,12 +17,12 @@ local Workspace = game:GetService("Workspace")
 
 local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 
--- Clean Key System GUI jika ada
+-- Hapus GUI Key lama jika ada
 if CoreGui:FindFirstChild("KianoKeyGui") then
     CoreGui.KianoKeyGui:Destroy()
 end
 
--- Load KeyAuth SDK
+-- Load KeyAuth Library
 local KeyAuthApp = loadstring(game:HttpGet("https://raw.githubusercontent.com/KeyAuth/KeyAuth-Roblox-SDK/main/source.lua"))()
 
 KeyAuthApp.init({
@@ -33,7 +33,7 @@ KeyAuthApp.init({
 })
 
 --------------------------------------------------------------------------------
--- 3. KEY SYSTEM UI
+-- 3. INTERFACE UI INPUT KEY
 --------------------------------------------------------------------------------
 local KeyScreenGui = Instance.new("ScreenGui")
 KeyScreenGui.Name = "KianoKeyGui"
@@ -42,8 +42,8 @@ KeyScreenGui.Parent = CoreGui
 
 local KeyFrame = Instance.new("Frame")
 KeyFrame.Name = "KeyFrame"
-KeyFrame.Size = UDim2.new(0, 320, 0, 200)
-KeyFrame.Position = UDim2.new(0.5, -160, 0.4, -100)
+KeyFrame.Size = UDim2.new(0, 320, 0, 210)
+KeyFrame.Position = UDim2.new(0.5, -160, 0.4, -105)
 KeyFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
 KeyFrame.BorderSizePixel = 0
 KeyFrame.Active = true
@@ -57,15 +57,15 @@ KeyCorner.Parent = KeyFrame
 local KeyTitle = Instance.new("TextLabel")
 KeyTitle.Size = UDim2.new(1, 0, 0, 40)
 KeyTitle.BackgroundTransparency = 1
-KeyTitle.Text = "🔑 KianoStore - System Key"
+KeyTitle.Text = "🔑 KianoStore - Key Verification"
 KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyTitle.Font = Enum.Font.GothamBold
-KeyTitle.TextSize = 14
+KeyTitle.TextSize = 13
 KeyTitle.Parent = KeyFrame
 
 local KeyInput = Instance.new("TextBox")
 KeyInput.Size = UDim2.new(1, -40, 0, 40)
-KeyInput.Position = UDim2.new(0, 20, 0, 55)
+KeyInput.Position = UDim2.new(0, 20, 0, 50)
 KeyInput.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
 KeyInput.BorderSizePixel = 0
 KeyInput.PlaceholderText = "Masukkan Key 1 Hari Kamu..."
@@ -81,7 +81,7 @@ InputCorner.Parent = KeyInput
 
 local SubmitBtn = Instance.new("TextButton")
 SubmitBtn.Size = UDim2.new(1, -40, 0, 36)
-SubmitBtn.Position = UDim2.new(0, 20, 0, 105)
+SubmitBtn.Position = UDim2.new(0, 20, 0, 100)
 SubmitBtn.Text = "VERIFIKASI KEY"
 SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -94,17 +94,18 @@ BtnCorner.CornerRadius = UDim.new(0, 6)
 BtnCorner.Parent = SubmitBtn
 
 local KeyStatus = Instance.new("TextLabel")
-KeyStatus.Size = UDim2.new(1, -40, 0, 30)
-KeyStatus.Position = UDim2.new(0, 20, 0, 150)
+KeyStatus.Size = UDim2.new(1, -40, 0, 50)
+KeyStatus.Position = UDim2.new(0, 20, 0, 145)
 KeyStatus.BackgroundTransparency = 1
 KeyStatus.Text = "Status: Menunggu Key..."
 KeyStatus.TextColor3 = Color3.fromRGB(200, 200, 200)
 KeyStatus.Font = Enum.Font.Gotham
-KeyStatus.TextSize = 11
+KeyStatus.TextSize = 10
+KeyStatus.TextWrapped = true
 KeyStatus.Parent = KeyFrame
 
 --------------------------------------------------------------------------------
--- 4. LOGIKA SCRIPT UTAMA KIANOSTORE (DIJALANKAN JIKA KEY VALID)
+-- 4. LOGIKA UTAMA (MASAK MS + REALTIME UPDATE + UNDERGROUND)
 --------------------------------------------------------------------------------
 local function LoadMainScript()
     if CoreGui:FindFirstChild("KianoStoreGui") then
@@ -501,7 +502,7 @@ local function LoadMainScript()
 end
 
 --------------------------------------------------------------------------------
--- 5. EVENT SUBMIT KEY SYSTEM
+-- 5. VERIFIKASI KEY PADA TOMBOL SUBMIT
 --------------------------------------------------------------------------------
 SubmitBtn.MouseButton1Click:Connect(function()
     local enteredKey = KeyInput.Text
@@ -518,13 +519,14 @@ SubmitBtn.MouseButton1Click:Connect(function()
     local result = KeyAuthApp.license(enteredKey)
 
     if result.success then
-        KeyStatus.Text = "✅ Key Valid! Memuat Script..."
+        KeyStatus.Text = "✅ Key Valid!\n" .. (result.message or "")
         KeyStatus.TextColor3 = Color3.fromRGB(100, 255, 100)
         task.wait(1)
+        
         KeyScreenGui:Destroy()
         LoadMainScript()
     else
-        KeyStatus.Text = "❌ Key Salah / Expired!"
+        KeyStatus.Text = "❌ Key Salah atau Expired!"
         KeyStatus.TextColor3 = Color3.fromRGB(255, 80, 80)
     end
 end)
